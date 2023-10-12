@@ -1,0 +1,7 @@
+{
+    "name": "John",
+    "age": 55,
+    "salary": 4000.0,
+    "isMarried": true,
+    "isHavingCar": null
+}
