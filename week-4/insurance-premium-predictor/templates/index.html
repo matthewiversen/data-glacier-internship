@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>ML API</title>
+		<link
+			href="https://fonts.googleapis.com/css?family=Pacifico"
+			rel="stylesheet"
+			type="text/css"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css?family=Arimo"
+			rel="stylesheet"
+			type="text/css"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css?family=Hind:300"
+			rel="stylesheet"
+			type="text/css"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300"
+			rel="stylesheet"
+			type="text/css"
+		/>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='css/style.css') }}"
+		/>
+	</head>
+
+	<body>
+		<div class="login">
+			<h1>Insurance Premium Predictor</h1>
+
+			<!-- Main Input For Receiving Query to our ML -->
+			<form action="{{ url_for('predict')}}" method="post">
+				<label for="age">Age:</label>
+				<input type="number" id="age" name="age" required /><br /><br />
+
+				<label for="sex">Sex:</label>
+				<select id="sex" name="sex" required>
+					<option value="male">Male</option>
+					<option value="female">Female</option></select
+				><br /><br />
+
+				<label for="bmi">BMI:</label>
+				<input
+					type="number"
+					id="bmi"
+					name="bmi"
+					step="0.01"
+					required
+				/><br /><br />
+
+				<label for="children">Number of Children:</label>
+				<input
+					type="number"
+					id="children"
+					name="children"
+					min="0"
+					required
+				/><br /><br />
+
+				<label for="smoker">Smoker:</label>
+				<select id="smoker" name="smoker" required>
+					<option value="yes">Yes</option>
+					<option value="no">No</option></select
+				><br /><br />
+
+				<label for="region">Region:</label>
+				<select id="region" name="region" required>
+					<option value="northwest">Northwest</option>
+					<option value="northeast">Northeast</option>
+					<option value="southwest">Southwest</option>
+					<option value="southeast">Southeast</option></select
+				><br /><br />
+
+				<button type="submit" class="btn btn-primary btn-block btn-large">
+					Predict
+				</button>
+			</form>
+
+			<br />
+			<br />
+			{{ prediction_text }}
+		</div>
+	</body>
+</html>
