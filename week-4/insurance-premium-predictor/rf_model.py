@@ -5,13 +5,13 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 import pickle
 
+# read data
 data = pd.read_csv("insurance.csv")
 
-# label encode
+# encode
 sex_enc = LabelEncoder()
 smoke_enc = LabelEncoder()
 reg_enc = LabelEncoder()
-
 data["sex"] = sex_enc.fit_transform(data["sex"])
 data["smoker"] = smoke_enc.fit_transform(data["smoker"])
 data["region"] = reg_enc.fit_transform(data["region"])
@@ -19,11 +19,11 @@ data["region"] = reg_enc.fit_transform(data["region"])
 # splitting columns
 X, y = data[data.columns[:-1]], data[data.columns[-1]]
 
-# Fit the model
+# fit the model
 rf_model = RandomForestRegressor()
 rf_model.fit(X, y)
 
-# Saving model and label encoders to disk
+# saving model and encoders
 pickle.dump(rf_model, open("rf_model.pkl", "wb"))
 pickle.dump(sex_enc, open("sex_enc.pkl", "wb"))
 pickle.dump(smoke_enc, open("smoke_enc.pkl", "wb"))
