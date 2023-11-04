@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import pickle
 
 app = Flask(__name__)
@@ -46,6 +46,35 @@ def predict():
     return render_template(
         "index.html", prediction_text=f"Insurance premium predicted as ${prediction}"
     )
+
+
+# added for week 5 api requirement
+@app.route("/api/predict/", methods=["GET"])
+def predict_api():
+    # Get inputs from query parameters
+    age = int(request.args.get("age"))
+    sex = request.args.get("sex")
+    bmi = float(request.args.get("bmi"))
+    children = int(request.args.get("children"))
+    smoker = request.args.get("smoker")
+    region = request.args.get("region")
+
+    # Encode categorical variables
+    sex = sex_enc.transform([sex])[0]
+    smoker = smoke_enc.transform([smoker])[0]
+    region = reg_enc.transform([region])[0]
+
+    # Turn inputs into dataframe for prediction
+    feature_vector = pd.DataFrame(
+        [[age, sex, bmi, children, smoker, region]],
+        columns=["age", "sex", "bmi", "children", "smoker", "region"],
+    )
+
+    # Make prediction
+    prediction = rf_model.predict(feature_vector)[0]
+    prediction = round(prediction, 2)
+
+    return jsonify({"prediction": prediction})
 
 
 if __name__ == "__main__":
