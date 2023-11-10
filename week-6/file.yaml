@@ -1,7 +1,7 @@
 file_type: csv
-dataset_name: testfile
-file_name: test_data
-table_name: edsurv
+dataset_name: parking_data
+file_path: data/parking_tickets_2017
+table_name: parking
 inbound_delimiter: ","
 outbound_delimiter: "|"
 skip_leading_rows: 1
