@@ -7,11 +7,7 @@ import datetime
 import gc
 import re
 
-
-################
-# File Reading #
-################
-
+# Supplied by Data Glacier
 def read_config_file(filepath):
     with open(filepath, 'r') as stream:
         try:
@@ -20,33 +16,15 @@ def read_config_file(filepath):
             logging.error(exc)
 
 
-def replacer(string, char):
-    pattern = char + '{2,}'
-    string = re.sub(pattern, char, string) 
-    return string
+def col_header_val(df, table_config):
+    # sort, strip leading and trailing spaces, and replace space with _
+    df_columns = sorted([col.strip().lower().replace(' ', '_') for col in df.columns])
+    yaml_columns = sorted([col.strip().lower().replace(' ', '_') for col in table_config['columns']])
 
-def col_header_val(df,table_config):
-    '''
-    replace whitespaces in the column
-    and standardized column names
-    '''
-    df.columns = df.columns.str.lower()
-    df.columns = df.columns.str.replace('[^\w]','_',regex=True)
-    df.columns = list(map(lambda x: x.strip('_'), list(df.columns)))
-    df.columns = list(map(lambda x: replacer(x,'_'), list(df.columns)))
-    expected_col = list(map(lambda x: x.lower(),  table_config['columns']))
-    expected_col.sort()
-    df.columns =list(map(lambda x: x.lower(), list(df.columns)))
-    df = df.reindex(sorted(df.columns), axis=1)
-    if len(df.columns) == len(expected_col) and list(expected_col)  == list(df.columns):
-        print("column name and column length validation passed")
-        return 1
+    if df_columns == yaml_columns:
+        return True
     else:
-        print("column name and column length validation failed")
-        mismatched_columns_file = list(set(df.columns).difference(expected_col))
-        print("Following File columns are not in the YAML file",mismatched_columns_file)
-        missing_YAML_file = list(set(expected_col).difference(df.columns))
-        print("Following YAML columns are not in the file uploaded",missing_YAML_file)
-        logging.info(f'df columns: {df.columns}')
-        logging.info(f'expected columns: {expected_col}')
-        return 0
+        # Find the mismatched columns
+        mismatched_columns = set(df_columns) ^ set(yaml_columns)
+        print(f"Mismatched columns: {list(mismatched_columns)}")
+        return False
