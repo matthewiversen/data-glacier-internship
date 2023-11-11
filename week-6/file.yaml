@@ -1,6 +1,8 @@
 file_type: csv
+export_file_type: csv
 dataset_name: parking_data
 file_path: data/parking_tickets_2017
+export_file_path: data/parking_tickets_validated
 table_name: parking
 inbound_delimiter: ","
 outbound_delimiter: "|"

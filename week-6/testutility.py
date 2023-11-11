@@ -16,7 +16,14 @@ def read_config_file(filepath):
             logging.error(exc)
 
 
-def col_header_val(df, table_config):
+def num_col_validation(df, table_config) -> bool:
+    if len(df.columns)== len(table_config['columns']):
+        return True
+    else:
+        return False
+
+
+def col_header_val(df, table_config) -> bool:
     # sort, strip leading and trailing spaces, and replace space with _
     df_columns = sorted([col.strip().lower().replace(' ', '_') for col in df.columns])
     yaml_columns = sorted([col.strip().lower().replace(' ', '_') for col in table_config['columns']])
