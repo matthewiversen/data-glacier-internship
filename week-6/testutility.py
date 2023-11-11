@@ -35,3 +35,16 @@ def col_header_val(df, table_config) -> bool:
         mismatched_columns = set(df_columns) ^ set(yaml_columns)
         print(f"Mismatched columns: {list(mismatched_columns)}")
         return False
+
+def summary(df, file_path) -> None:
+    # filesize in mb
+    file_size_bytes = os.path.getsize(file_path)
+    file_size_mb = file_size_bytes / (1024 * 1024)
+
+    # get dimensions
+    total_rows = len(df)
+    total_columns = len(df.columns)
+
+    print(f"Total number of rows: {total_rows}")
+    print(f"Total number of columns: {total_columns}")
+    print(f"File size: {file_size_mb:.2f} MB")
