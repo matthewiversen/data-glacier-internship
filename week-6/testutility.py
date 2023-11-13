@@ -31,7 +31,7 @@ def col_header_val(df, table_config) -> bool:
     if df_columns == yaml_columns:
         return True
     else:
-        # Find the mismatched columns
+        # find the mismatched columns
         mismatched_columns = set(df_columns) ^ set(yaml_columns)
         print(f"Mismatched columns: {list(mismatched_columns)}")
         return False
