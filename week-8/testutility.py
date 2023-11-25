@@ -6,6 +6,7 @@ import pandas as pd
 import datetime 
 import gc
 import re
+import difflib
 
 
 # summary of a data file
@@ -51,3 +52,56 @@ def set_pd_max_columns(max_columns: int | None) -> None:
 # changes the number of rows seen on output
 def set_pd_max_rows(max_rows: int | None) -> None:
     pd.set_option("display.max_rows", max_rows)
+
+
+def detect_outliers_iqr(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Detects and returns any outliers for a given dataframe.
+    """
+    Q1 = data.quantile(0.25)
+    Q3 = data.quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+
+    # filter for outliers
+    outliers = data[(data < lower_bound) | (data > upper_bound)]
+    return outliers
+
+
+def show_spelling_errors(
+    df: pd.DataFrame, similarity_threshold: float, exclude_columns: list[str]
+) -> None:
+    """This prints all of the observations in a column that are similar above a threshold
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
+        similarity_threshold (float): Decimal of how similar of results we want to see (0.0-1.0)
+        exclude_columns (list[str]): List of columns you want to exclude from spelling check
+    """
+
+    spelling_errors = {}
+
+    if exclude_columns is None:
+        exclude_columns = []
+
+    # find potential spelling errors for object columns
+    for column in df.select_dtypes(include="object"):
+        if column not in exclude_columns:
+            unique_values = df[column].dropna().unique()
+            potential_errors = []
+
+            for i, value1 in enumerate(unique_values):
+                for value2 in unique_values[i + 1 :]:
+                    similarity = difflib.SequenceMatcher(None, value1, value2).ratio()
+                    if similarity > similarity_threshold:
+                        potential_errors.append((value1, value2))
+
+            if potential_errors:
+                spelling_errors[column] = potential_errors
+
+    # print the errors
+    for column, errors in spelling_errors.items():
+        print(f"Potential spelling errors in column '{column}':")
+        for error in errors:
+            print(f"- '{error[0]}' might be similar to '{error[1]}'")
