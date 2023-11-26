@@ -105,3 +105,29 @@ def show_spelling_errors(
         print(f"Potential spelling errors in column '{column}':")
         for error in errors:
             print(f"- '{error[0]}' might be similar to '{error[1]}'")
+
+
+def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
+    """Prints info about and removes duplicate columns and rows
+
+    Args:
+        df (pd.DataFrame): Incoming Pandas DataFrame
+
+    Returns:
+        pd.DataFrame: Pandas DataFrame with no duplicate rows/columns
+    """
+
+    # count and remove duplicate rows
+    duplicate_rows = df[df.duplicated()]
+    num_duplicate_rows = len(duplicate_rows)
+    df = df.drop_duplicates()
+
+    # count and remove duplicate columns
+    duplicate_columns = df.columns[df.columns.duplicated()]
+    num_duplicate_columns = len(duplicate_columns)
+    df = df.loc[:, ~df.columns.duplicated()]
+
+    print(f"Number of duplicate rows removed: {num_duplicate_rows}")
+    print(f"Number of duplicate columns removed: {num_duplicate_columns}")
+
+    return df
